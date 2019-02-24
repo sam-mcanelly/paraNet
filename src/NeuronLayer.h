@@ -9,20 +9,25 @@
 #ifndef NEURONLAYER_H
 #define NEURONLAYER_H
 
+#include <vector>
+
 #include "Layer.h"
 #include "Types.h"
 
-template <size_t S>
-class NeuronLayer: public Layer<S, float>
+class NeuronLayer: public Layer
 {
     public:
-        NeuronLayer(int input_length, distrib_t distribution = _normal)
-        {
+        void setInput(float* input);
 
-        }
     private:
-        Neuron[S] neurons;
-        float*[S] weights;
+        activation_t _activation;
+        std::vector<float*> * _weights; //each row is a neuron
+        float*  _biases;
+
+        void initWeights(int neuron_count, int input_length, 
+                          distrib_t distribution,
+                          float mean, float var2);
+        void deleteWeights();
 };
 
 #endif

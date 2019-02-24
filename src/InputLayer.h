@@ -10,24 +10,19 @@
 #define INPUTLAYER_H
 
 #include "Layer.h"
+#include "Types.h"
 
-template <size_t S>
-class InputLayer: public Layer<S, float>
+class InputLayer: public Layer
 {
     public:
         InputLayer(int io_length, float* input = NULL) 
         {
-            _io_length = io_length;
-            if(NULL != input)
-            {
-                _input = input
-            }
-
+            _input_count, _node_count = io_length;
+            _input = input; 
             _output=_input;
         }
 
     private:
-        const float* _output;
 };
 
 #endif
