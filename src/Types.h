@@ -9,7 +9,9 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-#define NULL nullptr
+#define null nullptr
+
+#include <string>
 
 enum distrib_t 
 {
@@ -21,18 +23,40 @@ enum distrib_t
 
 enum layer_t
 {
-    _input,
+    /*weighted sum and reduction layers*/
     _conv2d,
+    _batch_norm2d,
     _max_pool,
     _neuron,
-    _unknown
-};
 
-enum activation_t 
-{
+    /*activation layers*/
     _relu,
     _sigmoid,
     _tanh,
+
+    /*final layers*/
+    _softmax,
+    _argmax,
+
+    /*io*/
+    _input,
+    _output
+};
+
+std::string clKernelPrefix = "../kernel/";
+//mapped to enum layer_t
+std::string clKernels[] = {"conv2d.cl", "batch_norm2d.cl",
+                           "max_pool.cl", "neuron.cl",
+                           "relu.cl", "sigmoid.cl", "tanh.cl", 
+                           "softmax.cl", "argmax.cl"};
+
+enum loss_function_t
+{
+    _mean_squared,
+    _mean_squared_log,
+    _absolute_mean,
+    _abssolute_percentage,
+    _cross_entropy,
 };
 
 #endif
