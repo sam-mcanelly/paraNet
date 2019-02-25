@@ -29,7 +29,7 @@ class Layer {
             assert(new_next->getInputLength() == _node_count);
             
             _next = new_next;
-            _next->setInput(_out, _node_count);
+            _next->setInput(_out.data(), _node_count);
         }
         virtual void setPrev(Layer * new_prev)
         {
@@ -42,7 +42,7 @@ class Layer {
             setInput(_prev->getOutput(), _prev->getOutputLength());
         }
 
-        virtual float const* const getOutput() { return _out; }
+        virtual float const* const getOutput() { return _out.data(); }
         int getOutputLength() { return size(); }
 
         virtual void setInput(float const* input, int new_input_size)
@@ -62,7 +62,7 @@ class Layer {
         int _node_count;
         int _input_size;
         float const * _in;
-        float * _out;
+        std::vector<float> _out;
 
         void setType(layer_t type) { _type = type; }
 

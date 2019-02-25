@@ -21,6 +21,15 @@ enum distrib_t
     _binomial
 };
 
+enum loss_function_t
+{
+    _mean_squared,
+    _mean_squared_log,
+    _absolute_mean,
+    _abssolute_percentage,
+    _cross_entropy,
+};
+
 enum layer_t
 {
     /*weighted sum and reduction layers*/
@@ -43,21 +52,12 @@ enum layer_t
     _output
 };
 
-std::string clKernelPrefix = "../kernel/";
+const std::string clKernelPrefix = "../kernel/";
 //mapped to enum layer_t
-std::string clKernels[] = {"conv2d.cl", "batch_norm2d.cl",
+const std::string clKernels[] = {"conv2d.cl", "batch_norm2d.cl",
                            "max_pool.cl", "neuron.cl",
                            "relu.cl", "sigmoid.cl", "tanh.cl", 
                            "softmax.cl", "argmax.cl"};
-
-enum loss_function_t
-{
-    _mean_squared,
-    _mean_squared_log,
-    _absolute_mean,
-    _abssolute_percentage,
-    _cross_entropy,
-};
 
 #endif
 

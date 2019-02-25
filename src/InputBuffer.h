@@ -12,8 +12,12 @@
 class InputBuffer
 {
     public:
-        InputBuffer() {}
+        InputBuffer() { _size = 0; }
+        InputBuffer(int size) {}
     private:
+        int _size;
+        
+
 };
 
 #endif

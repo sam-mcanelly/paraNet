@@ -1,0 +1,3 @@
+[submodule "extlibs/include/CLBlast"]
+	path = extlibs/include/CLBlast
+	url = https://github.com/sam-mcanelly/CLBlast

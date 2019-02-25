@@ -1,6 +1,6 @@
 /********************************************
  * 
- *  NN.h
+ *  NeuralNetwork.h
  * 
  *  Abstract neural network class
  * 
@@ -9,17 +9,18 @@
  * 
  *********************************************/
 
-#ifndef NN_H
-#define NN_H
+#ifndef NEURALNETWORK_H
+#define NEURALNETWORK_H
 
 #include <vector>
 
 #include "Layer.h"
+#include "NeuronLayer.h"
 
-class NN
+class NeuralNetwork
 {
     public:
-        NN(int input_size, int output_size)
+        NeuralNetwork(int input_size, int output_size)
             : _input_size(input_size),
               _output_size(output_size)
               {}

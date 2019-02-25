@@ -19,7 +19,6 @@ class Distribution
         Distribution(distrib_t distribution, float mean, float var2) 
         {
             _type = distribution;
-            generator = new std::default_random_engine(rd());
 
             switch(distribution)
             {
@@ -39,9 +38,7 @@ class Distribution
         }  
 
         ~Distribution()
-        {
-            delete generator;
-            
+        {   
             switch(_type)
             {
                 case _uniform:
@@ -71,12 +68,14 @@ class Distribution
                     return (float)(*log_normal)(generator);
                 case _binomial:
                     return (float)(*binomial)(generator);
+                default:
+                    return -1.0f;
             }
         }
 
     private:
-        std::random_device rd;
-        std::default_random_engine * generator;
+        //std::random_device rd;
+        std::default_random_engine generator;
 
         std::uniform_real_distribution<float> * uni;
         std::normal_distribution<float> * normal;

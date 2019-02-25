@@ -10,6 +10,7 @@
 #define NEURONLAYER_H
 
 #include <assert.h>
+#include <iostream>
 #include <vector>
 
 #include "Distribution.h"
@@ -19,6 +20,7 @@
 class NeuronLayer: public Layer
 {
     public:
+        NeuronLayer() {}
         NeuronLayer(int neuron_count, int input_length,
                     distrib_t distribution = _normal, 
                     float mean = 0.0f, float stdev = 1.0f);
@@ -26,12 +28,21 @@ class NeuronLayer: public Layer
 
         void setInput(float* input, int new_input_length);
 
+        void printParams(); // input, output, weights, biases
+        void printNeuronInfo(int neuron); // weights, biases
+
+        float * getWeights();
+        void printWeights();
+
+        float * getBiases();
+        void printBiases();
+
     private:
-        std::vector<std::vector<float>> _weights; //each row is a neuron
+        std::vector<float> _weights; //flattened weights representation
         std::vector<float> _biases;
 
-        void initWeights(int neuron_count, int input_length);
-        void generateRandomWB(distrib_t distribution, float mean, float var2);
+        void resizeWeights(int neuron_count, int input_length);
+        void generateWeightsAndBiases(distrib_t distribution, float mean, float var2);
 };
 
 #endif
