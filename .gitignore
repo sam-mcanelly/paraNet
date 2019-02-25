@@ -1,0 +1,4 @@
+/tst/*
+/.vscode/*
+/oclinfo.txt
+/src/main.cpp
