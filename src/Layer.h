@@ -103,13 +103,15 @@ class ActivationLayer: public Layer
             
             loadKernelCode();
         }
-    private:
 
+        std::string getKernelCode() { return kernel_code; }
+    private:
+        std::string kernel_code;
         void loadKernelCode()
         {
             std::ifstream file(clKernelPrefix + clKernels[_type]);
             assert(file.is_open());
-            std::string kernel(
+            kernel_code = std::string(
                 std::istreambuf_iterator<char>(file),
                 (std::istreambuf_iterator<char>()));
         }
