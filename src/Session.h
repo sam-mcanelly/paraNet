@@ -65,3 +65,15 @@ class Session
 };
 
 #endif
+
+//for later use
+
+//     //Create memory buffers on the device for each vector
+//     cl_mem W_clMem = clCreateBuffer(context, CL_MEM_READ_ONLY, VECTOR_SIZE * sizeof(float), NULL, &clStatus);
+//     cl_mem X_clMem = clCreateBuffer(context, CL_MEM_READ_ONLY, VECTOR_SIZE * sizeof(float), NULL, &clStatus);
+//     cl_mem O_clMem = clCreateBuffer(context, CL_MEM_WRITE_ONLY, VECTOR_SIZE * sizeof(float), NULL, &clStatus);
+
+//     //Copy the buffers to the device
+//     //clStatus = clEnqueueWriteBuffer(command_queue, W_clMem, CL_TRUE, 0, VECTOR_SIZE * sizeof(float),
+//     //                                )
+// }

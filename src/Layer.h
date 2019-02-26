@@ -196,7 +196,7 @@ class Activation
         #ifdef __NO_OPEN_CL__
             float sigmoid(float input)
             {
-                return input / (1 + abs((double)(input)));
+                return input / (1 + exp(input));
             }
         #endif
         

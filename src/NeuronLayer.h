@@ -2,6 +2,8 @@
  * 
  *  NeuronLayer.h
  * 
+ *  Classic fully connected layer
+ * 
  *  Author - Sam McAnelly
  * 
  *********************************************/
@@ -21,7 +23,7 @@ class NeuronLayer: public Layer
 {
     public:
         NeuronLayer() { Layer(); }
-        NeuronLayer(int neuron_count, int input_length,
+        NeuronLayer(int input_length, int neuron_count,
                     distrib_t distribution = _normal, 
                     float mean = 0.0f, float stdev = 1.0f,
                     layer_t activation=_relu);
@@ -33,7 +35,7 @@ class NeuronLayer: public Layer
         void printNeuronInfo(int neuron); // weights, biases
 
         float * getWeights();
-        void printWeights();
+        void printWeights();    
 
         float * getBiases();
         void printBiases();

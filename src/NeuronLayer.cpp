@@ -11,7 +11,7 @@
 /********************
  * Public functions
  * *****************/
-NeuronLayer::NeuronLayer(int neuron_count, int input_length,
+NeuronLayer::NeuronLayer(int input_length, int neuron_count,
                               distrib_t distribution, 
                               float mean, float stdev,
                               layer_t activation)
@@ -97,23 +97,14 @@ void NeuronLayer::printInfo()
     void NeuronLayer::compute()
     {
         assert(_input != NULL);
-        
-        int i = 0;
-        int localcounter = 0;
-        float currentBias = 0.0f;
-
-        std::cout << "Summing neurons" << std::endl;
 
         // Sum of Wx + b
         for(int i = 0; i < _node_count; i++)
         {
-            std::cout << "Summing neuron: " << i << std::endl;
             sumNeuron(i);
         }
 
-        std::cout << "Activating neurons" << std::endl;
         _activation.activate(_out.data(), _out.size(), _node_count);
-        std::cout << "Compute finished" << std::endl;
     }
 
     void NeuronLayer::sumNeuron(int neuron)
@@ -123,7 +114,9 @@ void NeuronLayer::printInfo()
 
         for(int i = start_idx; i < start_idx + _input_size; i++)
         {
+            //std::cout << "Wx + b = " << _weights[i] << " * " << _in[i - start_idx] << " + " << _biases[neuron] << " = ";
             _out[neuron] += _weights[i] * _in[i - start_idx] + _biases[neuron];
+            //std::cout << _out[neuron] << std::endl;
         }
     }
 #endif
@@ -144,7 +137,7 @@ void NeuronLayer::generateWeightsAndBiases(distrib_t distribution, float mean, f
 
     for(int i = 0; i < _biases.size(); i++)
     {
-        _biases[i] = dist.generate();
+        _biases[i] = dist.generate() / 10.0f;
     }   
 
     for(int i = 0; i < _weights.size(); i++)
