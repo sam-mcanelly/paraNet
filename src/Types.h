@@ -10,6 +10,7 @@
 #define TYPES_H
 
 #define null nullptr
+#define __NO_OPEN_CL__
 
 #include <string>
 
@@ -48,8 +49,7 @@ enum layer_t
     _argmax,
 
     /*io*/
-    _input,
-    _output
+    _input
 };
 
 const std::string clKernelPrefix = "../kernel/";

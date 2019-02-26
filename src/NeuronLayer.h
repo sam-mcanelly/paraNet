@@ -20,13 +20,14 @@
 class NeuronLayer: public Layer
 {
     public:
-        NeuronLayer() {}
+        NeuronLayer() { Layer(); }
         NeuronLayer(int neuron_count, int input_length,
                     distrib_t distribution = _normal, 
-                    float mean = 0.0f, float stdev = 1.0f);
+                    float mean = 0.0f, float stdev = 1.0f,
+                    layer_t activation=_relu);
         ~NeuronLayer();
 
-        void setInput(float* input, int new_input_length);
+        void setInput(float const* input, int new_input_length);
 
         void printParams(); // input, output, weights, biases
         void printNeuronInfo(int neuron); // weights, biases
@@ -37,9 +38,19 @@ class NeuronLayer: public Layer
         float * getBiases();
         void printBiases();
 
+        void printInfo();
+
+        #ifdef __NO_OPEN_CL__
+            void compute();
+            void sumNeuron(int neuron);
+        #endif
+
     private:
+        std::vector<float> _out;
         std::vector<float> _weights; //flattened weights representation
         std::vector<float> _biases;
+
+        Activation _activation;
 
         void resizeWeights(int neuron_count, int input_length);
         void generateWeightsAndBiases(distrib_t distribution, float mean, float var2);

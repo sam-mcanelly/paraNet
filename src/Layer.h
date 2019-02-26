@@ -13,12 +13,23 @@
 #define LAYER_H
 
 #include <assert.h>
+#include <iostream>
 #include <fstream>
+#include <vector>
 
 #include "Types.h"
 
+#ifdef __NO_OPEN_CL__
+    #include <cmath>
+#endif
+
 class Layer {
     public:
+        Layer()
+        {
+            _prev = null;
+            _next = null;
+        }
         int size() { return _node_count; }
         layer_t type() { return _type; }
 
@@ -47,13 +58,20 @@ class Layer {
 
         virtual void setInput(float const* input, int new_input_size)
         {
+            //std::cout << "Input size: " << _input_size << "New input size: " << new_input_size << std::endl;
             assert(new_input_size == _input_size);
 
             _input_size = new_input_size;
             _in = input;
         }
-        const float* getInput() { return _in; }
-        int getInputLength() { return 0; }
+        float const* getInput() { return _in; }
+        int getInputLength() { return _input_size; }
+
+        //TODO - refactor this for JSON output
+        virtual void printInfo()
+        {
+            std::cout << "Layer type: " << layerNames[_type] << std::endl;
+        }
 
     protected:
         Layer * _prev;
@@ -63,6 +81,8 @@ class Layer {
         int _input_size;
         float const * _in;
         std::vector<float> _out;
+
+        static const std::string layerNames[];
 
         void setType(layer_t type) { _type = type; }
 
@@ -78,34 +98,91 @@ class Layer {
 class BasicInputLayer: public Layer
 {
     public:
-        BasicInputLayer(int io_length, float* input = null) 
+        BasicInputLayer(int io_length) 
         {
-            _prev = null;
-            _input_size, _node_count = io_length;
-            _in = input; 
+            Layer();
+            _input_size = io_length;
+            _node_count = _input_size;
+            _in = null;
+            _type = _input;
+        }
+
+        float const* const getOutput()
+        { 
+            return _out;
+        }
+
+        void setInput(float const* input, int new_input_size)
+        {
+            //std::cout << "Input size: " << _input_size << "New input size: " << new_input_size << std::endl;
+            assert(new_input_size == _input_size);
+
+            _input_size = new_input_size;
+            _in = input;
             _out = _in;
+        }
+
+        //TODO - refactor for JSON output
+        void printInfo()
+        {
+            Layer::printInfo();
+            std::cout << "Input/Output size: " << _node_count << std::endl;
         }
 
     private:
         float const* _out;
+
+        
 };
 
-class ActivationLayer: public Layer
+class Activation
 {  
     public:
-        ActivationLayer(layer_t type)
+        Activation() { _type = _relu; }
+        Activation(layer_t type)
         {
             assert(type == _relu 
                     || type == _tanh
                     || type == _sigmoid);
             
-            setType(type);
+            _type = type;
             
-            loadKernelCode();
+            //loadKernelCode();
         }
 
+
         std::string getKernelCode() { return kernel_code; }
+
+        #ifdef __NO_OPEN_CL__
+            void activate(float *input, int input_count, int output_count)
+            {
+                assert(input_count == output_count);
+                switch(_type)
+                {
+                    case _relu:
+                        for(int i = 0; i < input_count; i++)
+                        {
+                            input[i] = std::max(0.0f, input[i]);
+                        }
+                        break;
+                    case _tanh:
+                        for(int i = 0; i < input_count; i++)
+                        {
+                            input[i] = tanh(input[i]);
+                        }
+                        break;
+                    case _sigmoid:
+                        for(int i = 0; i < input_count; i++)
+                        {
+                            input[i] = sigmoid(input[i]);
+                        }
+                        break;
+                }
+            }
+        #endif
     private:
+        int _output_size;
+        layer_t _type;
         std::string kernel_code;
         void loadKernelCode()
         {
@@ -115,6 +192,13 @@ class ActivationLayer: public Layer
                 std::istreambuf_iterator<char>(file),
                 (std::istreambuf_iterator<char>()));
         }
+
+        #ifdef __NO_OPEN_CL__
+            float sigmoid(float input)
+            {
+                return input / (1 + abs((double)(input)));
+            }
+        #endif
         
 };
 

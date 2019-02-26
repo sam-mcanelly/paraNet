@@ -26,6 +26,10 @@ class Session
 {
     public:
         Session(bool configure = false);
+
+        NeuralNetwork * getNN() { return _nn; }
+        void setNN(NeuralNetwork * nn) { _nn = nn; }
+
         void configureOpenCL();
         void run();
 
