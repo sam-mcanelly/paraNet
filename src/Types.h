@@ -29,6 +29,7 @@ enum loss_function_t
     _absolute_mean,
     _abssolute_percentage,
     _cross_entropy,
+    _binary_cross_entropy
 };
 
 enum layer_t
@@ -58,6 +59,13 @@ const std::string clKernels[] = {"conv2d.cl", "batch_norm2d.cl",
                            "max_pool.cl", "neuron.cl",
                            "relu.cl", "sigmoid.cl", "tanh.cl", 
                            "softmax.cl", "argmax.cl"};
+
+struct bp_out_t
+{
+    float da;
+    float dW;
+    float dB;
+};
 
 #endif
 

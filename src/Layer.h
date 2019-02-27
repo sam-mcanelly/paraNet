@@ -33,37 +33,35 @@ class Layer {
         int size() { return _node_count; }
         layer_t type() { return _type; }
 
-        virtual void setNext(Layer * new_next)
+        //TODO - populate _out with zeroes if not initialized?
+        virtual void setNext(Layer & new_next)
         {
             //TODO: make this assert unnecessary
             //update layers to fit mismatched inputs
-            assert(new_next->getInputLength() == _node_count);
+            assert(new_next.getInputLength() == _node_count);
             
-            _next = new_next;
+            //out not initialized
+            if(_out.data() == NULL)
+                _out.resize(_node_count);
+
+            _next = &new_next;
             _next->setInput(_out.data(), _node_count);
         }
-        virtual void setPrev(Layer * new_prev)
+
+        virtual void setPrev(Layer & new_prev)
         {
             if(_type == _input) return;
 
             //See TODO in setNext
-            assert(new_prev->getOutputLength() == _input_size);
+            assert(new_prev.getOutputLength() == _input_size);
 
-            _prev = new_prev;
+            _prev = &new_prev;
             setInput(_prev->getOutput(), _prev->getOutputLength());
         }
 
-        virtual float const* const getOutput() { return _out.data(); }
+        virtual float const* const getOutput() { assert(_out.data() != NULL); return _out.data(); }
         int getOutputLength() { return size(); }
 
-        virtual void setInput(float const* input, int new_input_size)
-        {
-            //std::cout << "Input size: " << _input_size << "New input size: " << new_input_size << std::endl;
-            assert(new_input_size == _input_size);
-
-            _input_size = new_input_size;
-            _in = input;
-        }
         float const* getInput() { return _in; }
         int getInputLength() { return _input_size; }
 
@@ -71,6 +69,16 @@ class Layer {
         virtual void printInfo()
         {
             std::cout << "Layer type: " << layerNames[_type] << std::endl;
+        }
+
+        virtual void setInput(float const* input, int new_input_size)
+        {
+            //std::cout << "Input size: " << _input_size << "New input size: " << new_input_size << std::endl;
+            assert(input != NULL);
+            assert(new_input_size == _input_size);
+
+            _input_size = new_input_size;
+            _in = input;
         }
 
     protected:

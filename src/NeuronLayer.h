@@ -23,10 +23,10 @@ class NeuronLayer: public Layer
 {
     public:
         NeuronLayer() { Layer(); }
-        NeuronLayer(int input_length, int neuron_count,
+        NeuronLayer(int input_length, int neuron_count, layer_t activation=_relu,
                     distrib_t distribution = _normal, 
-                    float mean = 0.0f, float stdev = 1.0f,
-                    layer_t activation=_relu);
+                    float mean = 0.0f, float stdev = 1.0f
+                    );
         ~NeuronLayer();
 
         void setInput(float const* input, int new_input_length);
@@ -45,10 +45,10 @@ class NeuronLayer: public Layer
         #ifdef __NO_OPEN_CL__
             void compute();
             void sumNeuron(int neuron);
+            void softmax(std::vector<float> output_vec);
         #endif
 
     private:
-        std::vector<float> _out;
         std::vector<float> _weights; //flattened weights representation
         std::vector<float> _biases;
 

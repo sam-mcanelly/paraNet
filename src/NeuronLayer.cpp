@@ -9,12 +9,26 @@
 #include "NeuronLayer.h"
 
 /********************
+ * utility functions
+ * *****************/
+#ifdef __NO_OPEN_CL__
+    float exponential(int n, float x) 
+    { 
+        float sum = 1.0f; // initialize sum of series 
+    
+        for (int i = n - 1; i > 0; --i ) 
+            sum = 1 + x * sum / i; 
+    
+        return sum; 
+    } 
+#endif
+
+/********************
  * Public functions
  * *****************/
-NeuronLayer::NeuronLayer(int input_length, int neuron_count,
+NeuronLayer::NeuronLayer(int input_length, int neuron_count, layer_t activation,
                               distrib_t distribution, 
-                              float mean, float stdev,
-                              layer_t activation)
+                              float mean, float stdev)
 {
     Layer();
     assert(neuron_count > 0); 
@@ -96,7 +110,8 @@ void NeuronLayer::printInfo()
 #ifdef __NO_OPEN_CL__
     void NeuronLayer::compute()
     {
-        assert(_input != NULL);
+        assert(_in != NULL);
+        assert(_out.data() != NULL);
 
         // Sum of Wx + b
         for(int i = 0; i < _node_count; i++)
@@ -115,8 +130,29 @@ void NeuronLayer::printInfo()
         for(int i = start_idx; i < start_idx + _input_size; i++)
         {
             //std::cout << "Wx + b = " << _weights[i] << " * " << _in[i - start_idx] << " + " << _biases[neuron] << " = ";
-            _out[neuron] += _weights[i] * _in[i - start_idx] + _biases[neuron];
+            _out[neuron] += _weights[i] * _in[i - start_idx];
             //std::cout << _out[neuron] << std::endl;
+        }
+
+        _out[neuron] += _biases[neuron];
+    }
+
+    void NeuronLayer::softmax(std::vector<float> output_vec)
+    {
+        int i;
+        float sum = 0.0f;
+        std::cout << "Computing softmax" << std::endl;
+
+        // sum up exp(z) for all outputs
+        for(i = 0; i < _out.size(); i++)
+        {
+            sum += exponential(10,_out[i]);
+        }
+
+        // now reduce to probabilities
+        for(i = 0; i < _out.size(); i++)
+        {
+            output_vec[i] = (exponential(10, _out[i])) / sum;
         }
     }
 #endif
@@ -145,5 +181,7 @@ void NeuronLayer::generateWeightsAndBiases(distrib_t distribution, float mean, f
         _weights[i] = dist.generate();
     } 
 }
+
+
 
 
